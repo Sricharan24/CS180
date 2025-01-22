@@ -1,9 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
 // Import the Transaction model
-const Transaction = require('./Models/Transaction');
+const Transaction = require('./models/Transaction');
 
 // Initialize Express app
 const app = express();
@@ -14,7 +15,7 @@ app.use(express.json()); // Parse JSON bodies
 
 // Connect to MongoDB
 mongoose
-  .connect('mongodb://localhost:27017/finance-dashboard', {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
