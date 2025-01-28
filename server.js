@@ -46,6 +46,21 @@ app.post('/transactions', async (req, res) => {
   }
 });
 
+app.delete('/transactions/:id', async (req, res) => {
+  try {
+    const { id } = req.params; // Extract transaction ID from URL
+    const deletedTransaction = await Transaction.findByIdAndDelete(id); // Delete transaction from database
+    if (deletedTransaction) {
+      res.status(200).json({ message: 'Transaction deleted successfully', deletedTransaction });
+    } else {
+      res.status(404).json({ message: 'Transaction not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting transaction:', error);
+    res.status(500).send('Error deleting transaction');
+  }
+});
+
 // Start the server
 const PORT = 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
