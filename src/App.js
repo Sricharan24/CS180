@@ -51,6 +51,13 @@ function App() {
 
     return (
         <div>
+            <header className="logo-header">
+                <img 
+                    src="/logo.png" 
+                    alt="FinWise Logo" 
+                    className="logo" 
+                />
+            </header>
             <h1>Personal Finance Dashboard</h1>
             <section>
                 <h2>Add Transaction</h2>
@@ -72,6 +79,12 @@ function App() {
                     value={form.description} 
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                 />
+                <input 
+                    type="date"
+                    placeholder="Date"
+                    value={form.date}
+                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                />
                 <button onClick={addTransaction}>Add Transaction</button>
             </section>
             <section>
@@ -79,7 +92,7 @@ function App() {
                 <ul>
                     {transactions.map((t) => (
                         <li key={t._id}>
-                            ${t.amount} - {t.category} ({t.description})
+                           <strong>{new Date(t.date).toLocaleDateString('en-US')}</strong> | ${t.amount} - {t.category} ({t.description})
                         </li>
                     ))}
                 </ul>
