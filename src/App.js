@@ -47,10 +47,35 @@ function App() {
             console.error('Error adding transaction:', error);
         }
     };
+
+    const deleteTransaction = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5001/transactions/${id}`, {
+                method: 'DELETE',
+            });
+    
+            if (response.ok) {
+                console.log('Transaction deleted successfully');
+                // Remove the transaction from the state
+                setTransactions(transactions.filter((t) => t._id !== id));
+            } else {
+                console.error('Error deleting transaction:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+        }
+    };
     
 
     return (
         <div>
+            <header className="logo-header">
+                <img 
+                    src="/logo.png" 
+                    alt="FinWise Logo" 
+                    className="logo" 
+                />
+            </header>
             <h1>Personal Finance Dashboard</h1>
             <section>
                 <h2>Add Transaction</h2>
@@ -72,17 +97,32 @@ function App() {
                     value={form.description} 
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                 />
+                <input 
+                    type="date"
+                    placeholder="Date"
+                    value={form.date}
+                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                />
                 <button onClick={addTransaction}>Add Transaction</button>
             </section>
             <section>
                 <h2>Transactions</h2>
                 <ul>
-                    {transactions.map((t) => (
-                        <li key={t._id}>
-                            ${t.amount} - {t.category} ({t.description})
-                        </li>
-                    ))}
-                </ul>
+        {transactions.map((t) => (
+            <li key={t._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                    <strong>{new Date(t.date).toLocaleDateString('en-US')}</strong> | ${t.amount} - {t.category} ({t.description})
+                </div>
+                {/* Add Delete Button */}
+                <button
+                    style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white', border: 'none', cursor: 'pointer' }}
+                    onClick={() => deleteTransaction(t._id)}
+                >
+                    Delete
+                </button>
+            </li>
+        ))}
+    </ul>
             </section>
             <section>
                 <h2>Budgets</h2>
