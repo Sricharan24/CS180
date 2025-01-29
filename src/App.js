@@ -38,27 +38,36 @@ function App() {
 
     const addTransaction = async () => {
         const transaction = {
-            user_id: '123',
+            user_id: '123', // Mock user ID for now
             ...form,
         };
-    
-        try {
-            const response = await fetch(`${API_BASE_URL}/transactions`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(transaction),
-            });
 
-            if (response.ok) {
-                console.log('Transaction added:', await response.json());
+        try {
+            let response;
+            if (form._id) {
+                response = await fetch(`${API_BASE_URL}/transactions/${form._id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(transaction),
+                });
             } else {
-                console.error('Error adding transaction:', response.statusText);
+                response = await fetch(`${API_BASE_URL}/transactions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(transaction),
+                });
             }
 
-            setForm({ amount: '', category: '', description: '', date: '' });
-            fetchTransactions();
+            if (response.ok) {
+                const updatedTransaction = await response.json();
+                console.log('Transaction added/updated:', updatedTransaction);
+                setForm({ amount: '', category: '', description: '', date: '' });
+                fetchTransactions();
+            } else {
+                console.error('Error adding/updating transaction:', response.statusText);
+            }
         } catch (error) {
-            console.error('Error adding transaction:', error);
+            console.error('Error adding/updating transaction:', error);
         }
     };
 
@@ -77,6 +86,16 @@ function App() {
         } catch (error) {
             console.error('Error deleting transaction:', error);
         }
+    };
+
+    const handleEditTransaction = (transaction) => {
+        setForm({
+            _id: transaction._id,
+            amount: transaction.amount,
+            category: transaction.category,
+            description: transaction.description,
+            date: new Date(transaction.date).toISOString().split('T')[0],
+        });
     };
 
     const fetchReport = async () => {
@@ -152,7 +171,9 @@ function App() {
                     value={form.date}
                     onChange={(e) => setForm({ ...form, date: e.target.value })}
                 />
-                <button onClick={addTransaction}>Add Transaction</button>
+                <button onClick={addTransaction}>
+                    {form._id ? 'Update Transaction' : 'Add Transaction'}
+                </button>
             </section>
 
             {/* Transactions Section */}
@@ -169,6 +190,12 @@ function App() {
                                 onClick={() => deleteTransaction(t._id)}
                             >
                                 Delete
+                            </button>
+                            <button
+                                style={{ marginLeft: '10px', backgroundColor: 'blue', color: 'white', border: 'none', cursor: 'pointer' }}
+                                onClick={() => handleEditTransaction(t)}
+                            >
+                                Edit
                             </button>
                         </li>
                     ))}
@@ -187,7 +214,7 @@ function App() {
                 </ul>
             </section>
 
-            {/* Financial Report Section (With Download Button) */}
+            {/* Financial Report Section */}
             <section>
                 <h2>Generate Report</h2>
                 <input 
@@ -217,7 +244,6 @@ function App() {
                             ))}
                         </ul>
 
-                        {/* Download Button */}
                         <button onClick={downloadReport} style={{ marginTop: '10px', backgroundColor: '#007bff', color: 'white', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}>
                             Download Report
                         </button>
