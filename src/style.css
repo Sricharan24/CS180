@@ -77,3 +77,33 @@ ul {
     width: 200px;
     height: auto;
 }
+
+.report-container {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 500px;
+  margin: 20px auto;
+  text-align: left;
+}
+
+/* Ensure category breakdown is aligned properly */
+.report-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.report-container li {
+  background-color: transparent;
+  padding: 5px 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.report-container h3,
+.report-container h4 {
+  margin-bottom: 5px;
+  color: #4CAF50;
+  font-weight: bold;
+}
