@@ -75,6 +75,23 @@ app.delete('/transactions/:id', async (req, res) => {
   }
 });
 
+// PUT /transactions/:id - Edit an existing transaction
+app.put('/transactions/:id', async (req, res) => {
+  try {
+    const { id } = req.params; // Get the transaction ID from URL params
+    const updatedTransaction = await Transaction.findByIdAndUpdate(id, req.body, { new: true }); // Update the transaction
+    if (updatedTransaction) {
+      res.status(200).json(updatedTransaction); // Return the updated transaction
+    } else {
+      res.status(404).json({ message: 'Transaction not found' });
+    }
+  } catch (error) {
+    console.error('Error updating transaction:', error);
+    res.status(500).send('Error updating transaction');
+  }
+});
+
+
 /** 
  * @route GET /budgets
  * @desc Fetch all budgets
