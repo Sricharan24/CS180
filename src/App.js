@@ -11,6 +11,9 @@ function App() {
     const [reportForm, setReportForm] = useState({ startDate: '', endDate: '' });
     const [reportData, setReportData] = useState(null);
 
+    // State for sorting
+    const [sortOrder, setSortOrder] = useState('date'); // Default sorting by date
+
     useEffect(() => {
         fetchTransactions();
         fetchBudgets();
@@ -137,6 +140,15 @@ function App() {
         document.body.removeChild(link);
     };
 
+    // Sorting function
+    const sortTransactions = (transactions) => {
+        if (sortOrder === 'amount') {
+            return transactions.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
+        } else {
+            return transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+        }
+    };
+
     return (
         <div>
             <header className="logo-header">
@@ -179,24 +191,35 @@ function App() {
             {/* Transactions Section */}
             <section>
                 <h2>Transactions</h2>
+                            {/* Sort Transactions */}
+            <section>
+                <label htmlFor="sortOrder">Sort by: </label>
+                <select id="sortOrder" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+                    <option value="date">Date</option>
+                    <option value="amount">Amount</option>
+                </select>
+            </section>
+
                 <ul>
-                    {transactions.map((t) => (
+                    {sortTransactions(transactions).map((t) => (
                         <li key={t._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
                                 <strong>{new Date(t.date).toLocaleDateString('en-US')}</strong> | ${t.amount} - {t.category} ({t.description})
                             </div>
-                            <button
-                                style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white', border: 'none', cursor: 'pointer' }}
-                                onClick={() => deleteTransaction(t._id)}
-                            >
-                                Delete
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginTop: '10px', width: 'fit-content', padding: '0', backgroundColor: 'transparent', boxShadow: 'none' }}>
+                            <button 
+                            style={{ backgroundColor: 'blue', color: 'white', border: 'none', cursor: 'pointer', padding: '5px 10.5px', fontSize: '12px', borderRadius: '4px' }} 
+                             onClick={() => handleEditTransaction(t)}
+                             >
+                            Edit
                             </button>
-                            <button
-                                style={{ marginLeft: '10px', backgroundColor: 'blue', color: 'white', border: 'none', cursor: 'pointer' }}
-                                onClick={() => handleEditTransaction(t)}
-                            >
-                                Edit
-                            </button>
+                            <button 
+                            style={{ backgroundColor: 'red', color: 'white', border: 'none', cursor: 'pointer', padding: '5px 4px', fontSize: '12px', borderRadius: '4px', marginTop: '5px' }} 
+                            onClick={() => deleteTransaction(t._id)}
+                             >
+                             Delete
+                             </button>
+                            </div>
                         </li>
                     ))}
                 </ul>
