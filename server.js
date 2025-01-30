@@ -5,17 +5,17 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Import the Transaction model
+// Import the models
 const Transaction = require('./models/Transaction');
-const Budget = require('./models/Budget'); 
-const User = require('./models/User'); // Import the User model
+const Budget = require('./models/Budget');
+const User = require('./models/User');
 
 // Initialize Express app
 const app = express();
 
 // Middleware
-app.use(cors()); // Enable CORS for cross-origin requests
-app.use(express.json()); // Parse JSON bodies
+app.use(cors());
+app.use(express.json());
 
 // Connect to MongoDB
 mongoose
@@ -174,37 +174,31 @@ app.get('/reports', authenticate, async (req, res) => {
       return res.status(400).json({ message: 'Start date and end date are required' });
     }
 
-    // Fetch transactions in the date range for the logged-in user
     const transactions = await Transaction.find({
       user_id: req.user.userId,
-      date: { $gte: new Date(startDate), $lte: new Date(endDate) }
+      date: { $gte: new Date(startDate), $lte: new Date(endDate) },
     });
 
     if (transactions.length === 0) {
       return res.status(404).json({ message: 'No transactions found in the given date range' });
     }
 
-    // Compute total spending
     const totalSpending = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
-    // Compute spending per category
     const categoryBreakdown = transactions.reduce((acc, t) => {
       acc[t.category] = (acc[t.category] || 0) + parseFloat(t.amount);
       return acc;
     }, {});
 
-    // Fetch budgets for comparison
     const budgets = await Budget.find({ user_id: req.user.userId });
 
-    // Calculate budget performance
-    const budgetPerformance = budgets.map(b => ({
+    const budgetPerformance = budgets.map((b) => ({
       category: b.category,
       budgeted: b.amount,
       spent: categoryBreakdown[b.category] || 0,
-      remaining: Math.max(0, b.amount - (categoryBreakdown[b.category] || 0))
+      remaining: Math.max(0, b.amount - (categoryBreakdown[b.category] || 0)),
     }));
 
-    // Return the report
     res.json({ totalSpending, categoryBreakdown, budgetPerformance });
   } catch (error) {
     console.error('Error generating report:', error);
@@ -212,7 +206,10 @@ app.get('/reports', authenticate, async (req, res) => {
   }
 });
 
-// POST /signup - Register a new user
+/** 
+ * @route POST /signup
+ * @desc Register a new user
+ */
 app.post('/signup', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -226,7 +223,10 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// POST /signin - Authenticate a user
+/** 
+ * @route POST /signin
+ * @desc Authenticate a user
+ */
 app.post('/signin', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -245,4 +245,3 @@ app.post('/signin', async (req, res) => {
 // Start the server
 const PORT = 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-

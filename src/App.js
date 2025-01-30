@@ -17,6 +17,9 @@ function MainApp() {
     // State for sorting
     const [sortOrder, setSortOrder] = useState('date'); // Default sorting by date
 
+    // State for budget form
+    const [budgetForm, setBudgetForm] = useState({ amount: '', category: '' });
+
     useEffect(() => {
         fetchTransactions();
         fetchBudgets();
@@ -135,6 +138,35 @@ function MainApp() {
         }
     };
 
+    const addBudget = async () => {
+        const token = localStorage.getItem('token');
+        const budget = {
+            ...budgetForm,
+        };
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/budgets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(budget),
+            });
+
+            if (response.ok) {
+                const newBudget = await response.json();
+                console.log('Budget added:', newBudget);
+                setBudgetForm({ amount: '', category: '' });
+                fetchBudgets();
+            } else {
+                console.error('Error adding budget:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error adding budget:', error);
+        }
+    };
+
     // Function to download the report as CSV
     const downloadReport = () => {
         if (!reportData) return;
@@ -247,6 +279,19 @@ function MainApp() {
             {/* Budgets Section */}
             <section>
                 <h2>Budgets</h2>
+                <input 
+                    type="number" 
+                    placeholder="Budget Amount" 
+                    value={budgetForm.amount} 
+                    onChange={(e) => setBudgetForm({ ...budgetForm, amount: e.target.value })}
+                />
+                <input 
+                    type="text" 
+                    placeholder="Budget Category" 
+                    value={budgetForm.category} 
+                    onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
+                />
+                <button onClick={addBudget}>Add Budget</button>
                 <ul>
                     {budgets.map((b) => (
                         <li key={b._id}>
@@ -290,23 +335,20 @@ function MainApp() {
                             Download Report
                         </button>
                     </div>
-                )}
-            </section>
-        </div>
-    );
-}
-
-function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path='/signin' element={<SignIn />} />
-                <Route path='/signup' element={<SignUp />} />
-                <Route path='/main' element={<MainApp />} />
-                <Route path='/' element={<Navigate to="/signup" />} />
-            </Routes>
-        </Router>
-    );
-}
-
-export default App;
+              
+                     )}
+                 </section>
+     
+                 {/* Routing for SignIn and SignUp */}
+                 <Router>
+                     <Routes>
+                         <Route path="/signin" element={<SignIn />} />
+                         <Route path="/signup" element={<SignUp />} />
+                         <Route path="/" element={<Navigate to="/signin" />} />
+                     </Routes>
+                 </Router>
+             </div>
+         );
+     }
+     
+     export default MainApp;

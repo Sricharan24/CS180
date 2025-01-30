@@ -12,7 +12,6 @@ body {
   text-align: center;
 }
 
-  
 div {
   background-color: #fff;
   border-radius: 8px;
@@ -22,60 +21,59 @@ div {
   max-width: 600px;
   margin: 10px auto;
 }
-  
-  h1 {
-    color: #4CAF50;
-    font-size: 2rem;
-  }
-  
-  section {
-    margin-bottom: 20px;
-  }
-  
-  input {
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  li {
-    background-color: #f9f9f9;
-    padding: 3px;
-    text-align: left;
+
+h1 {
+  color: #4CAF50;
+  font-size: 2rem;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+li {
+  background-color: #f9f9f9;
+  padding: 3px;
+  text-align: left;
 }
 
 ul {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
-  
-  .logo-header {
-    position: absolute;
-    top: 20px;
-    left: 30px;
+.logo-header {
+  position: absolute;
+  top: 20px;
+  left: 30px;
 }
 
 .logo {
-    width: 200px;
-    height: auto;
+  width: 200px;
+  height: auto;
 }
 
 .report-container {
@@ -146,4 +144,42 @@ ul {
 
 .auth-container button:hover {
   background-color: #45a049;
+}
+
+
+/* Highlighting sorted transactions */
+.sorted-transaction {
+  background-color: #e8f5e9;
+  font-weight: bold;
+}
+
+/* Styling for error messages */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+/* Success message styles */
+.success-message {
+  color: green;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+/* Additional button styles for delete and edit */
+button.delete {
+  background-color: red;
+}
+
+button.delete:hover {
+  background-color: darkred;
+}
+
+button.edit {
+  background-color: blue;
+}
+
+button.edit:hover {
+  background-color: darkblue;
 }
