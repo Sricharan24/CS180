@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import SignIn from './SignIn';
+import SignUp from './SignUp';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
-function App() {
+function MainApp() {
     const [transactions, setTransactions] = useState([]);
     const [budgets, setBudgets] = useState([]);
     const [form, setForm] = useState({ amount: '', category: '', description: '', date: '' });
@@ -21,7 +24,10 @@ function App() {
 
     const fetchTransactions = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/transactions`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/transactions`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
             const data = await response.json();
             setTransactions(data);
         } catch (error) {
@@ -31,7 +37,10 @@ function App() {
 
     const fetchBudgets = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/budgets`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/budgets`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
             const data = await response.json();
             setBudgets(data);
         } catch (error) {
@@ -40,8 +49,8 @@ function App() {
     };
 
     const addTransaction = async () => {
+        const token = localStorage.getItem('token');
         const transaction = {
-            user_id: '123', // Mock user ID for now
             ...form,
         };
 
@@ -50,13 +59,19 @@ function App() {
             if (form._id) {
                 response = await fetch(`${API_BASE_URL}/transactions/${form._id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(transaction),
                 });
             } else {
                 response = await fetch(`${API_BASE_URL}/transactions`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(transaction),
                 });
             }
@@ -76,8 +91,10 @@ function App() {
 
     const deleteTransaction = async (id) => {
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
                 method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
@@ -103,8 +120,10 @@ function App() {
 
     const fetchReport = async () => {
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch(
-                `${API_BASE_URL}/reports?startDate=${reportForm.startDate}&endDate=${reportForm.endDate}`
+                `${API_BASE_URL}/reports?startDate=${reportForm.startDate}&endDate=${reportForm.endDate}`,
+                { headers: { 'Authorization': `Bearer ${token}` } }
             );
             if (!response.ok) {
                 throw new Error('Error fetching report');
@@ -274,6 +293,19 @@ function App() {
                 )}
             </section>
         </div>
+    );
+}
+
+function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path='/signin' element={<SignIn />} />
+                <Route path='/signup' element={<SignUp />} />
+                <Route path='/main' element={<MainApp />} />
+                <Route path='/' element={<Navigate to="/signup" />} />
+            </Routes>
+        </Router>
     );
 }
 
