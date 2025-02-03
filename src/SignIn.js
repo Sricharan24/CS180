@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function SignIn() {
     const [form, setForm] = useState({ email: '', password: '' });
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,10 +20,12 @@ function SignIn() {
                 localStorage.setItem('token', data.token);
                 navigate('/main');
             } else {
-                console.error('Error signing in:', response.statusText);
+                const errorData = await response.json();
+                setErrorMessage(errorData.message || 'Incorrect Password');
             }
         } catch (error) {
-            console.error('Error signing in:', error);
+            setErrorMessage('Incorrect Password');
+            console.error('Incorrect Password:', error);
         }
     };
 
@@ -43,8 +47,10 @@ function SignIn() {
                 />
                 <button type="submit">Sign In</button>
             </form>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
         </div>
     );
-}
+    }
 
-export default SignIn;
+    export default SignIn;

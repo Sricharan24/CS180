@@ -10,9 +10,9 @@ body {
   align-items: center;
   min-height: 100vh;
   text-align: center;
-}
-
-div {
+ }
+ 
+ div {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -20,27 +20,31 @@ div {
   width: 80%;
   max-width: 600px;
   margin: 10px auto;
-}
-
-h1 {
+ }
+ 
+ 
+ h1 {
   color: #4CAF50;
   font-size: 2rem;
-}
-
-section {
+ }
+ 
+ 
+ section {
   margin-bottom: 20px;
-}
-
-input {
+ }
+ 
+ 
+ input {
   padding: 10px;
   margin: 10px 0;
   border-radius: 4px;
   border: 1px solid #ccc;
   width: 100%;
   box-sizing: border-box;
-}
-
-button {
+ }
+ 
+ 
+ button {
   padding: 10px 20px;
   background-color: #4CAF50;
   color: white;
@@ -48,35 +52,60 @@ button {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
-}
-
-button:hover {
+ }
+ 
+ 
+ button:hover {
   background-color: #45a049;
-}
-
-li {
+ }
+ 
+ 
+ li {
   background-color: #f9f9f9;
   padding: 3px;
   text-align: left;
-}
-
-ul {
+ }
+ 
+ 
+ ul {
   padding: 0;
   margin: 0;
-}
-
-.logo-header {
+ }
+ 
+ 
+ .logo-header {
   position: absolute;
   top: 20px;
   left: 30px;
-}
-
-.logo {
-  width: 200px;
+ }
+ 
+ 
+ .logo-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  background: linear-gradient(to top right, #d2e7f2, #ffffff); /* Gradient background */
+  padding: 10px 5px; /* Reduce left and right padding */
+  border-radius: 8px;
+ }
+ 
+ 
+ .logo {
+  width: 150px; /* Adjust the width as needed */
   height: auto;
-}
-
-.report-container {
+ }
+ 
+ 
+ .dashboard-title {
+  color: #09355d;
+  font-size: 1.5rem;
+  margin-top: 10px;
+ }
+ 
+ 
+ .report-container {
   background-color: #fff;
   padding: 15px;
   border-radius: 8px;
@@ -85,28 +114,32 @@ ul {
   max-width: 500px;
   margin: 20px auto;
   text-align: left;
-}
-
-/* Ensure category breakdown is aligned properly */
-.report-container ul {
+ }
+ 
+ 
+ /* Ensure category breakdown is aligned properly */
+ .report-container ul {
   list-style-type: none;
   padding: 0;
-}
-
-.report-container li {
+ }
+ 
+ 
+ .report-container li {
   background-color: transparent;
   padding: 5px 10px;
   border-bottom: 1px solid #ddd;
-}
-
-.report-container h3,
-.report-container h4 {
+ }
+ 
+ 
+ .report-container h3,
+ .report-container h4 {
   margin-bottom: 5px;
   color: #4CAF50;
   font-weight: bold;
-}
-
-.auth-container {
+ }
+ 
+ 
+ .auth-container {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -115,24 +148,27 @@ ul {
   max-width: 400px;
   margin: 20px auto;
   text-align: left;
-}
-
-.auth-container h2 {
+ }
+ 
+ 
+ .auth-container h2 {
   color: #4CAF50;
   font-size: 1.5rem;
   margin-bottom: 20px;
-}
-
-.auth-container input {
+ }
+ 
+ 
+ .auth-container input {
   padding: 10px;
   margin: 10px 0;
   border-radius: 4px;
   border: 1px solid #ccc;
   width: 100%;
   box-sizing: border-box;
-}
-
-.auth-container button {
+ }
+ 
+ 
+ .auth-container button {
   padding: 10px 20px;
   background-color: #4CAF50;
   color: white;
@@ -140,46 +176,74 @@ ul {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
-}
-
-.auth-container button:hover {
+ }
+ 
+ 
+ .auth-container button:hover {
   background-color: #45a049;
-}
-
-
-/* Highlighting sorted transactions */
-.sorted-transaction {
+ }
+ 
+ 
+ 
+ 
+ /* Highlighting sorted transactions */
+ .sorted-transaction {
   background-color: #e8f5e9;
   font-weight: bold;
-}
-
-/* Styling for error messages */
-.error-message {
+ }
+ 
+ 
+ /* Styling for error messages */
+ .error-message {
   color: red;
   font-size: 0.9rem;
   margin-top: 10px;
-}
-
-/* Success message styles */
-.success-message {
+ }
+ 
+ 
+ /* Success message styles */
+ .success-message {
   color: green;
   font-size: 0.9rem;
   margin-top: 10px;
-}
-
-/* Additional button styles for delete and edit */
-button.delete {
+ }
+ 
+ 
+ /* Additional button styles for delete and edit */
+ button.delete {
   background-color: red;
-}
-
-button.delete:hover {
+ }
+ 
+ 
+ button.delete:hover {
   background-color: darkred;
-}
-
-button.edit {
+ }
+ 
+ 
+ button.edit {
   background-color: blue;
-}
-
-button.edit:hover {
+ }
+ 
+ 
+ button.edit:hover {
   background-color: darkblue;
-}
+ }
+ 
+ 
+ .logout-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: absolute;
+  left: 1530px;
+ }
+ 
+ 
+ .logout-button:hover {
+  background-color: #4CAF50;
+ }
+ 
