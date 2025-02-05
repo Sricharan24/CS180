@@ -6,7 +6,6 @@ function SignIn() {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -30,9 +29,12 @@ function SignIn() {
     };
 
     return (
-        <div className="auth-container">
+        <div className="auth-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div className="logo-container">
+                <img src="/logo.png" alt="FinWise Logo" className="logo" />
+            </div>
             <h2>Sign In</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <input
                     type="email"
                     placeholder="Email"
@@ -51,6 +53,6 @@ function SignIn() {
             <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
         </div>
     );
-    }
+}
 
-    export default SignIn;
+export default SignIn;

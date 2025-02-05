@@ -235,10 +235,7 @@ function MainApp() {
         <header className="logo-header">
             <button onClick={handleLogout} className="logout-button">Logout</button>
         </header>
-        <div className="logo-container">
-            <img src="/logo.png" alt="FinWise Logo" className="logo" />
-            <h1 className="dashboard-title">Personal Finance Dashboard</h1>
-        </div>
+        <h1 className="dashboard-title">Personal Finance Dashboard</h1>
         {/* Add Transaction Section */}
         <section>
             <h2>Add Transaction</h2>
