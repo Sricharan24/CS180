@@ -31,7 +31,7 @@ function SignIn() {
     return (
         <div className="auth-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div className="logo-container">
-                <img src="/logo.png" alt="FinWise Logo" className="logo" />
+                <img src="/FINWISE.png" alt="FinWise Logo" className="logo" />
             </div>
             <h2>Sign In</h2>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
