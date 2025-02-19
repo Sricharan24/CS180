@@ -233,8 +233,10 @@ function MainApp() {
     return (
     <div>
         <header className="logo-header">
-            <button onClick={handleLogout} className="logout-button">Logout</button>
+        <img src="/FINWISE.png" alt="FinWise Logo" className="logo" />
+        <button onClick={handleLogout} className="logout-button">Logout</button>
         </header>
+
         <h1 className="dashboard-title">Personal Finance Dashboard</h1>
         {/* Add Transaction Section */}
         <section>
@@ -283,6 +285,7 @@ function MainApp() {
 
 
             <ul>
+            <div className="transactions-container">
                 {sortTransactions(transactions).map((t) => (
                     <li key={t._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
@@ -304,6 +307,7 @@ function MainApp() {
                         </div>
                     </li>
                 ))}
+                </div>
             </ul>
         </section>
 

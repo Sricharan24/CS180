@@ -17,8 +17,8 @@ body {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 15px;
-  width: 80%;
-  max-width: 600px;
+  width: 90%;
+  max-width: 800px;
   margin: 10px auto;
  }
  
@@ -75,8 +75,8 @@ body {
  
  .logo-header {
   position: absolute;
-  top: 20px;
-  left: 30px;
+  top: 10px;
+  left: 10px;
  }
  
  
@@ -214,6 +214,15 @@ body {
   margin-top: 10px;
  }
  
+ .transactions-container {
+  max-height: 300px;
+  max-width: 1500px;
+  overflow-y: auto;
+  border: 9px solid #8ace94;
+  border-radius: 8px;
+
+}
+
  
  /* Additional button styles for delete and edit */
  button.delete {
@@ -245,7 +254,7 @@ body {
   cursor: pointer;
   transition: background-color 0.3s;
   position: absolute;
-  left: 1530px;
+  left: 1300px;
  }
  
  
