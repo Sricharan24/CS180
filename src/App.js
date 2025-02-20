@@ -183,11 +183,12 @@ function MainApp() {
     return (
         <div>
             <header>
-                <img src="/FINWISE.png" alt="FinWise Logo" className="logo" />
+                <div className="header-content">
+                    <h1 className="dashboard-title">Personal Finance Dashboard</h1>
+                </div>
                 <button onClick={handleLogout} className="logout-button">Logout</button>
             </header>
 
-            <h1 className="dashboard-title">Personal Finance Dashboard</h1>
             <div className="nav-tabs">
                 <button onClick={() => setActiveTab('addTransaction')}>Add Transaction</button>
                 <button onClick={() => setActiveTab('transactions')}>Transactions</button>
