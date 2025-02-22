@@ -129,6 +129,14 @@ header {
   margin-top: 20px;
 }
 
+.report-container h3,
+.report-container p,
+.report-container h4,
+.report-container ul,
+.report-container li {
+  color: black; /* Change the "Report Summary" text color and everything in that section to black */
+}
+
 .input-group {
   margin-bottom: 10px;
 }
