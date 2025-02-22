@@ -10,7 +10,7 @@ body {
 header {
   width: 97%;
   background-image: url('fw.jpg');
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   padding: 70px 25px; /* Increase padding to make it longer up and down */
