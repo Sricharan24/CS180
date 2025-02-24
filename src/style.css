@@ -121,7 +121,11 @@ header {
 }
 
 .auth-container input {
-    margin: 15px 0;
+    padding: 10px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    width: 100%; /* Set to 100% to expand input fields horizontally */
+    font-size: 1rem;
 }
 
 .budget-section button,
@@ -227,7 +231,7 @@ input:focus {
     color: white;
     padding: 10px 25px;
     font-weight: 500;
-    margin-top: -130px; /* Move the logout button a little higher */
+    margin-top: -130px; 
 }
 
 .logout-button:hover {
