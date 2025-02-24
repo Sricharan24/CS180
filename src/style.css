@@ -1,132 +1,132 @@
 body {
-  background-color: #1a1a1a;
-  font-family: 'Arial', sans-serif;
-  color: white;
-  margin: 0;
-  padding: 20px;
-  min-height: 100vh;
+    background-color: #1a1a1a;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
 }
-
+  
 header {
-  width: 97%;
-  background-image: url('fw.jpg');
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 70px 25px; /* Increase padding to make it longer up and down */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 97%;
+    background-image: url('fw.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 70px 25px; /* Increase padding to make it longer up and down */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .logo {
-  width: 160px;
-  height: auto;
+    width: 160px;
+    height: auto;
 }
 
 .dashboard-title {
-  color: white;
-  font-size: 2rem;
-  margin-left: 350px;
-  font-weight: 600;
+    color: white;
+    font-size: 2rem;
+    margin-left: 350px;
+    font-weight: 600;
 }
 
 .nav-tabs {
-  display: flex;
-  gap: 15px;
-  margin: 10px 0; /* Add margin to create space */
+    display: flex;
+    gap: 15px;
+    margin: 10px 0; /* Add margin to create space */
 }
 
 .nav-tabs button {
-  background-color: #0a3d3b;
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
+    background-color: #0a3d3b;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
 }
 
 .nav-tabs button:hover {
-  background-color: #0a3d3b;
-  transform: translateY(-1px);
+    background-color: #0a3d3b;
+    transform: translateY(-1px);
 }
 
 .dashboard-container {
-  background-color: #282929;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 25px;
-  width: 100%;
-  max-width: 94vw; /* Adjust the width to fit almost the screen */
-  margin: 0 auto;
+    background-color: #282929;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    width: 100%;
+    max-width: 94vw; /* Adjust the width to fit almost the screen */
+    margin: 0 auto;
 }
 
 .dashboard-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
 }
 
 .dashboard-table th {
-  background-color: #282929;
-  color: white;
-  font-weight: 600;
-  padding: 15px;
-  border-bottom: 2px solid #e9ecef;
-  text-align: left;
+    background-color: #282929;
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    border-bottom: 2px solid #e9ecef;
+    text-align: left;
 }
 
 .dashboard-table td {
-  padding: 15px;
-  border-bottom: 1px solid #e9ecef;
-  vertical-align: middle;
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
 }
-
 
 .auth-container {
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  max-width: 500px;
-  margin: 50px auto;
-  width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 500px;
+    margin: 50px auto;
+    width: 100%;
 }
+
 .auth-container h2 {
-  color: #4CAF50;
-  margin-bottom: 30px;
-  font-size: 1.8rem;
+    color: #4CAF50;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
 }
 
 .auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .auth-form button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px;
-  font-size: 1rem;
-  margin-top: 15px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    margin-top: 15px;
 }
 
 .auth-container input {
-  margin: 15px 0;
+    margin: 15px 0;
 }
 
 .budget-section button,
 .report-section button {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .report-container h3,
@@ -134,102 +134,102 @@ header {
 .report-container h4,
 .report-container ul,
 .report-container li {
-  color: black; /* Change the "Report Summary" text color and everything in that section to black */
+    color: black; /* Change the "Report Summary" text color and everything in that section to black */
 }
 
 .input-group {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .amount-cell {
-  color: white;
-  font-weight: 600;
-  font-family: 'Courier New', monospace;
+    color: white;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
 }
 
 .category-tag {
-  display: inline-block;
-  padding: 5px 12px;
-  border-radius: 15px;
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 500;
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 15px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .date-cell {
-  color: white;
-  font-size: 0.9rem;
-  white-space: nowrap;
+    color: white;
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .action-buttons {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 8px;
 }
 
 .edit-btn {
-  background-color: #0a3d3b;
-  color: white;
-  padding: 6px 12px;
-  font-size: 0.85rem;
+    background-color: #0a3d3b;
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.85rem;
 }
 
 .delete-btn {
-  background-color: #0a3d3b;
-  color: white;
-  padding: 6px 12px;
-  font-size: 0.85rem;
+    background-color: #0a3d3b;
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.85rem;
 }
 
 button {
-  transition: all 0.2s ease;
-  border-radius: 4px;
+    transition: all 0.2s ease;
+    border-radius: 4px;
 }
 
 button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .input-group {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 input {
-  padding: 10px 8px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  width: 36%;
-  font-size: 1rem;
+    padding: 10px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    width: 36%;
+    font-size: 1rem;
 }
 
 input:focus {
-  border-color: #4CAF50;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
 .report-container {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 25px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 25px;
 }
 
 .report-value {
-  color: #2e7d32;
-  font-weight: 600;
-  font-size: 1.1rem;
+    color: #2e7d32;
+    font-weight: 600;
+    font-size: 1.1rem;
 }
 
 .logout-button {
-  background-color: #1a1a1a;
-  color: white;
-  padding: 10px 25px;
-  font-weight: 500;
-  margin-top: -130px; /* Move the logout button a little higher */
+    background-color: #1a1a1a;
+    color: white;
+    padding: 10px 25px;
+    font-weight: 500;
+    margin-top: -130px; /* Move the logout button a little higher */
 }
 
 .logout-button:hover {
-  background-color: #1a1a1a;
+    background-color: #1a1a1a;
 }

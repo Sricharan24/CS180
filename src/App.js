@@ -12,7 +12,7 @@ function MainApp() {
     const [reportForm, setReportForm] = useState({ startDate: '', endDate: '' });
     const [reportData, setReportData] = useState(null);
     const [sortOrder, setSortOrder] = useState('date');
-    const [budgetForm, setBudgetForm] = useState({ amount: '', category: '' });
+    const [budgetForm, setBudgetForm] = useState({ amount: '', category: '', startDate: '', endDate: '' });
     const [activeTab, setActiveTab] = useState('transactions');
 
     const navigate = useNavigate();
@@ -142,7 +142,7 @@ function MainApp() {
 
             if (response.ok) {
                 const newBudget = await response.json();
-                setBudgetForm({ amount: '', category: '' });
+                setBudgetForm({ amount: '', category: '', startDate: '', endDate: '' });
                 fetchBudgets();
             }
         } catch (error) {
@@ -313,11 +313,27 @@ function MainApp() {
                                 onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
                             />
                         </div>
+                        <div className="input-group">
+                            <input
+                                type="date"
+                                placeholder="Start Date"
+                                value={budgetForm.startDate}
+                                onChange={(e) => setBudgetForm({ ...budgetForm, startDate: e.target.value })}
+                            />
+                        </div>
+                        <div className="input-group">
+                            <input
+                                type="date"
+                                placeholder="End Date"
+                                value={budgetForm.endDate}
+                                onChange={(e) => setBudgetForm({ ...budgetForm, endDate: e.target.value })}
+                            />
+                        </div>
                         <button onClick={addBudget}>Add Budget</button>
                         <ul>
                             {budgets.map((b) => (
                                 <li key={b._id}>
-                                    {b.category}: ${b.amount} (Ends: {new Date(b.end_date).toLocaleDateString()})
+                                    {b.category}: ${b.amount} (From: {new Date(b.start_date).toLocaleDateString()} to {new Date(b.end_date).toLocaleDateString()})
                                 </li>
                             ))}
                         </ul>
