@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'r
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
+const CATEGORIES = ['Food', 'Transportation', 'Housing', 'Entertainment', 'Utilities', 'Healthcare', 'Education', 'Other'];
 
 function MainApp() {
     const [transactions, setTransactions] = useState([]);
@@ -12,12 +13,9 @@ function MainApp() {
     const [reportForm, setReportForm] = useState({ startDate: '', endDate: '' });
     const [reportData, setReportData] = useState(null);
     const [sortOrder, setSortOrder] = useState('date');
-    const [budgetForm, setBudgetForm] = useState({
-        amount: '',
-        category: '',
-        monthYear: '', // Store the month and year as a single value (e.g., "2025-02")
-    });
+    const [budgetForm, setBudgetForm] = useState({ amount: '', category: '', month: '' });
     const [activeTab, setActiveTab] = useState('transactions');
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     const navigate = useNavigate();
 
@@ -55,7 +53,7 @@ function MainApp() {
     const addTransaction = async () => {
         const token = localStorage.getItem('token');
         const transaction = { ...form };
-
+    
         try {
             let response;
             if (form._id) {
@@ -77,17 +75,31 @@ function MainApp() {
                     body: JSON.stringify(transaction),
                 });
             }
-
+    
             if (response.ok) {
                 const updatedTransaction = await response.json();
+    
+                // ✅ Optimistically update UI before re-fetching budgets
+                setBudgets((prevBudgets) => 
+                    prevBudgets.map(budget => 
+                        budget.category === updatedTransaction.category && budget.month === updatedTransaction.date.slice(0, 7)
+                            ? { ...budget, spent: budget.spent + parseFloat(updatedTransaction.amount) }
+                            : budget
+                    )
+                );
+    
+                // ✅ Re-fetch budgets to ensure consistency
+                await fetchBudgets();  
+    
+                // Reset form and switch tabs
                 setForm({ amount: '', category: '', description: '', date: '' });
-                fetchTransactions();
-                setActiveTab('transactions'); // Return to transactions tab after update
+                setActiveTab('transactions');
             }
         } catch (error) {
             console.error('Error adding/updating transaction:', error);
         }
     };
+    
 
     const deleteTransaction = async (id) => {
         try {
@@ -113,9 +125,78 @@ function MainApp() {
             description: transaction.description,
             date: new Date(transaction.date).toISOString().split('T')[0],
         });
-        setActiveTab('addTransaction'); // Switch to add transaction tab
+        setActiveTab('addTransaction');
     };
 
+    const addBudget = async () => {
+        const token = localStorage.getItem('token');
+        
+        // Validate all fields using the selectedCategory state
+        if (!budgetForm.month || !selectedCategory || !budgetForm.amount) {
+          alert('Please fill all budget fields');
+          return;
+        }
+      
+        try {
+          const response = await fetch(`${API_BASE_URL}/budgets`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              category: selectedCategory, // Use selectedCategory instead of form field
+              amount: parseFloat(budgetForm.amount),
+              month: budgetForm.month,
+              start_date: `${budgetForm.month}-01`,
+              end_date: `${budgetForm.month}-${new Date(
+                budgetForm.month.split('-')[0],
+                budgetForm.month.split('-')[1],
+                0
+              ).getDate()}`
+            }),
+          });
+      
+          // Handle response properly
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to save budget');
+          }
+      
+          const data = await response.json();
+          setBudgetForm({ amount: '', category: '', month: '' });
+          fetchBudgets();
+          alert(`Budget for ${selectedCategory} added successfully!`);
+      
+        } catch (error) {
+          console.error('Error adding budget:', error);
+          alert(error.message || 'An error occurred while adding the budget');
+        }
+      };
+    
+
+    const deleteBudget = async (id) => {
+        const token = localStorage.getItem('token');
+    
+        try {
+            const response = await fetch(`${API_BASE_URL}/budgets/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+    
+            if (response.ok) {
+                alert('Budget deleted successfully');
+                fetchBudgets(); // Refresh budget list
+            } else {
+                const data = await response.json();
+                alert(`Error: ${data.message || "Could not delete budget"}`);
+            }
+        } catch (error) {
+            console.error('Error deleting budget:', error);
+            alert('An error occurred while deleting the budget.');
+        }
+    };
+    
     const fetchReport = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -130,31 +211,6 @@ function MainApp() {
         }
     };
 
-    const addBudget = async () => {
-        const token = localStorage.getItem('token');
-        const budget = { ...budgetForm };
-    
-        try {
-            const response = await fetch(`${API_BASE_URL}/budgets`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(budget),
-            });
-    
-            if (response.ok) {
-                const newBudget = await response.json();
-                setBudgetForm({ amount: '', category: '', monthYear: '' });
-                fetchBudgets();  // Refresh the list of budgets
-                setActiveTab('budgets'); // Ensure we stay on the 'budgets' tab after adding the budget
-            }
-        } catch (error) {
-            console.error('Error adding budget:', error);
-        }
-    };
-    
 
     const downloadReport = () => {
         if (!reportData) return;
@@ -215,12 +271,15 @@ function MainApp() {
                             />
                         </div>
                         <div className="input-group">
-                            <input
-                                type="text"
-                                placeholder="Category"
+                            <select
                                 value={form.category}
                                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                            />
+                            >
+                                <option value="">Select Category</option>
+                                {CATEGORIES.map(category => (
+                                    <option key={category} value={category}>{category}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className="input-group">
                             <input
@@ -302,7 +361,22 @@ function MainApp() {
 
 {activeTab === 'budgets' && (
     <section className="section-box budget-section">
-        <h2>Budgets</h2>
+        <h2>Monthly Budgets</h2>
+        <div className="category-tabs">
+  {CATEGORIES.map(category => (
+    <button
+      key={category}
+      className={`tab-button ${selectedCategory === category ? 'active' : ''}`}
+      onClick={() => {
+        setSelectedCategory(category);
+        // No need to update budgetForm.category since we're using selectedCategory
+      }}
+    >
+      {category}
+    </button>
+  ))}
+</div>
+        
         <div className="input-group">
             <input
                 type="number"
@@ -310,32 +384,48 @@ function MainApp() {
                 value={budgetForm.amount}
                 onChange={(e) => setBudgetForm({ ...budgetForm, amount: e.target.value })}
             />
-        </div>
-        <div className="input-group">
             <input
-                type="text"
-                placeholder="Budget Category"
-                value={budgetForm.category}
-                onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
+                type="month"
+                value={budgetForm.month}
+                onChange={(e) => setBudgetForm({ ...budgetForm, month: e.target.value })}
             />
+            <button onClick={addBudget}>Add Budget</button>
         </div>
-        <div className="input-group">
-            <input
-                type="month" 
-                value={budgetForm.monthYear}
-                onChange={(e) => setBudgetForm({ ...budgetForm, monthYear: e.target.value })}
-            />
-        </div>
-        <button onClick={addBudget}>Add Budget</button>
-        <ul>
-            {budgets.map((b) => (
-                <li key={b._id}>
-                    {b.category}: ${b.amount} (Month: {new Date(b.monthYear + '-01').toLocaleString('default', { month: 'long', year: 'numeric' })})
-                </li>
-            ))}
-        </ul>
-    </section>
-)}
+
+        
+        <div className="budget-list">
+        {budgets
+    .filter(b => b.category === selectedCategory)
+    .sort((a, b) => new Date(b.month) - new Date(a.month))
+    .map((budget) => {
+        const [year, month] = budget.month.split('-').map(Number);
+        const formattedMonth = new Date(year, month - 1, 1).toLocaleString('default', { month: 'long', year: 'numeric' });
+
+        return (
+            <div key={budget._id} className="budget-item">
+                <h3>{formattedMonth}</h3>
+                <div className="budget-details">
+                    <p>Budget: ${budget.amount.toFixed(2)}</p>
+                    <p>Spent: ${budget.spent.toFixed(2)}</p>
+                    <p>Remaining: ${budget.remaining.toFixed(2)}</p>
+                    <button 
+                        className="delete-btn"
+                        onClick={() => deleteBudget(budget._id)}
+                    >
+                        Delete
+                    </button>
+                </div>
+            </div>
+        );
+    })}
+
+                    </div>
+
+
+
+
+                    </section>
+                )}
 
                 {activeTab === 'report' && (
                     <section className="section-box report-section">

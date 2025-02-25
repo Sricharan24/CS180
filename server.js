@@ -41,12 +41,45 @@ const authenticate = (req, res, next) => {
   }
 };
 
-// Routes
+// Utility function to update budgets
+const updateBudgetsForTransaction = async (userId, category, date) => {
+  try {
+    const budgets = await Budget.find({
+      user_id: userId,
+      category: category,
+      start_date: { $lte: date },
+      end_date: { $gte: date }
+    });
 
-/** 
- * @route GET /transactions
- * @desc Fetch all transactions for the logged-in user
- */
+    for (const budget of budgets) {
+      const transactions = await Transaction.find({
+        user_id: userId,
+        category: category,
+        date: {
+          $gte: new Date(budget.start_date),
+          $lte: new Date(budget.end_date)
+        }
+      });
+
+      const totalSpent = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
+      
+      // Add validation
+      if (isNaN(totalSpent)) {
+        throw new Error('Invalid transaction amounts found');
+      }
+
+      budget.spent = totalSpent;
+      budget.remaining = budget.amount - totalSpent;
+      await budget.save();
+    }
+  } catch (error) {
+    console.error('Error updating budgets:', error);
+    throw error; // Re-throw to be caught by parent try/catch
+  }
+};
+
+// Transaction Routes
+
 app.get('/transactions', authenticate, async (req, res) => {
   try {
     const transactions = await Transaction.find({ user_id: req.user.userId });
@@ -57,44 +90,20 @@ app.get('/transactions', authenticate, async (req, res) => {
   }
 });
 
-/** 
- * @route POST /transactions
- * @desc Add a new transaction for the logged-in user
- */
 app.post('/transactions', authenticate, async (req, res) => {
   try {
-    const transaction = new Transaction({ ...req.body, user_id: req.user.userId });
-    const savedTransaction = await transaction.save();
-    res.status(201).json(savedTransaction);
+      const transaction = new Transaction({ ...req.body, user_id: req.user.userId });
+      const savedTransaction = await transaction.save();
+      
+      // Return all transactions for the user
+      const transactions = await Transaction.find({ user_id: req.user.userId });
+      res.status(201).json(transactions);
   } catch (error) {
-    console.error('Error saving transaction:', error);
-    res.status(400).send('Error saving transaction');
+      console.error('Error saving transaction:', error);
+      res.status(400).json({ error: 'Error saving transaction' });
   }
 });
 
-/** 
- * @route DELETE /transactions/:id
- * @desc Delete a transaction by ID for the logged-in user
- */
-app.delete('/transactions/:id', authenticate, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedTransaction = await Transaction.findOneAndDelete({ _id: id, user_id: req.user.userId });
-    if (deletedTransaction) {
-      res.status(200).json({ message: 'Transaction deleted successfully', deletedTransaction });
-    } else {
-      res.status(404).json({ message: 'Transaction not found' });
-    }
-  } catch (error) {
-    console.error('Error deleting transaction:', error);
-    res.status(500).send('Error deleting transaction');
-  }
-});
-
-/** 
- * @route PUT /transactions/:id
- * @desc Edit an existing transaction for the logged-in user
- */
 app.put('/transactions/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;
@@ -103,7 +112,14 @@ app.put('/transactions/:id', authenticate, async (req, res) => {
       req.body,
       { new: true }
     );
+    
     if (updatedTransaction) {
+      // Update budgets after modification
+      await updateBudgetsForTransaction(
+        req.user.userId,
+        updatedTransaction.category,
+        updatedTransaction.date
+      );
       res.status(200).json(updatedTransaction);
     } else {
       res.status(404).json({ message: 'Transaction not found' });
@@ -111,6 +127,31 @@ app.put('/transactions/:id', authenticate, async (req, res) => {
   } catch (error) {
     console.error('Error updating transaction:', error);
     res.status(500).send('Error updating transaction');
+  }
+});
+
+app.delete('/transactions/:id', authenticate, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedTransaction = await Transaction.findOneAndDelete({ 
+      _id: id, 
+      user_id: req.user.userId 
+    });
+    
+    if (deletedTransaction) {
+      // Update budgets after deletion
+      await updateBudgetsForTransaction(
+        req.user.userId,
+        deletedTransaction.category,
+        deletedTransaction.date
+      );
+      res.status(200).json({ message: 'Transaction deleted successfully', deletedTransaction });
+    } else {
+      res.status(404).json({ message: 'Transaction not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting transaction:', error);
+    res.status(500).send('Error deleting transaction');
   }
 });
 
@@ -132,35 +173,84 @@ app.get('/budgets', authenticate, async (req, res) => {
  * @route POST /budgets
  * @desc Add a new budget for the logged-in user
  */
-app.post('/budgets', authenticate, async (req, res) => {
+app.get('/budgets', authenticate, async (req, res) => {
   try {
-    const budget = new Budget({ ...req.body, user_id: req.user.userId });
-    const savedBudget = await budget.save();
-    res.status(201).json(savedBudget);
+    const budgets = await Budget.find({ user_id: req.user.userId });
+    res.json(budgets);
   } catch (error) {
-    console.error('Error saving budget:', error);
-    res.status(400).send('Error saving budget');
+    console.error('Error fetching budgets:', error);
+    res.status(500).send('Error fetching budgets');
   }
 });
 
-/** 
- * @route DELETE /budgets/:id
- * @desc Delete a budget by ID for the logged-in user
- */
+app.post('/budgets', authenticate, async (req, res) => {
+  try {
+    const { category, amount, month, start_date, end_date } = req.body;
+    const user_id = req.user.userId;
+
+    if (!month) {
+      return res.status(400).json({ message: "Month is required for budget" });
+    }
+
+    let existingBudget = await Budget.findOne({ category, month, user_id });
+
+    if (existingBudget) {
+      existingBudget.amount += parseFloat(amount);
+    } else {
+      existingBudget = new Budget({ 
+        category, 
+        amount: parseFloat(amount), 
+        month, 
+        start_date, 
+        end_date, 
+        user_id 
+      });
+    }
+
+    const transactions = await Transaction.find({
+      user_id,
+      category,
+      date: { 
+        $gte: new Date(start_date),
+        $lte: new Date(end_date)
+      }
+    });
+
+    const totalSpent = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
+    existingBudget.spent = totalSpent;
+    existingBudget.remaining = existingBudget.amount - totalSpent;
+
+    const savedBudget = await existingBudget.save();
+    res.status(200).json({ message: `Budget for ${category} in ${month} updated`, updatedBudget: savedBudget });
+  } catch (error) {
+    console.error('Error saving budget:', error);
+    res.status(400).send({ message: 'Error saving budget', error });
+  }
+});
+
+
+
+// Replace the deleteBudget function with this proper route
+// Add proper budget deletion route (replace any existing deleteBudget function)
 app.delete('/budgets/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedBudget = await Budget.findOneAndDelete({ _id: id, user_id: req.user.userId });
+    const deletedBudget = await Budget.findOneAndDelete({
+      _id: id,
+      user_id: req.user.userId
+    });
+
     if (deletedBudget) {
-      res.status(200).json({ message: 'Budget deleted successfully', deletedBudget });
+      res.status(200).json({ message: 'Budget deleted successfully' });
     } else {
       res.status(404).json({ message: 'Budget not found' });
     }
   } catch (error) {
     console.error('Error deleting budget:', error);
-    res.status(500).send('Error deleting budget');
+    res.status(500).json({ message: 'Error deleting budget' });
   }
 });
+
 
 /** 
  * @route GET /reports

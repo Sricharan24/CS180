@@ -5,9 +5,9 @@ body {
     margin: 0;
     padding: 20px;
     min-height: 100vh;
-}
+  }
   
-header {
+  header {
     width: 97%;
     background-image: url('fw.jpg');
     background-size: cover;
@@ -18,32 +18,32 @@ header {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.header-content {
+  }
+  
+  .header-content {
     display: flex;
     align-items: center;
-}
-
-.logo {
+  }
+  
+  .logo {
     width: 160px;
     height: auto;
-}
-
-.dashboard-title {
+  }
+  
+  .dashboard-title {
     color: white;
     font-size: 2rem;
     margin-left: 350px;
     font-weight: 600;
-}
-
-.nav-tabs {
+  }
+  
+  .nav-tabs {
     display: flex;
     gap: 15px;
     margin: 10px 0; /* Add margin to create space */
-}
-
-.nav-tabs button {
+  }
+  
+  .nav-tabs button {
     background-color: #0a3d3b;
     color: white;
     border: none;
@@ -52,14 +52,14 @@ header {
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.95rem;
-}
-
-.nav-tabs button:hover {
+  }
+  
+  .nav-tabs button:hover {
     background-color: #0a3d3b;
     transform: translateY(-1px);
-}
-
-.dashboard-container {
+  }
+  
+  .dashboard-container {
     background-color: #282929;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -67,30 +67,30 @@ header {
     width: 100%;
     max-width: 94vw; /* Adjust the width to fit almost the screen */
     margin: 0 auto;
-}
-
-.dashboard-table {
+  }
+  
+  .dashboard-table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-}
-
-.dashboard-table th {
+  }
+  
+  .dashboard-table th {
     background-color: #282929;
     color: white;
     font-weight: 600;
     padding: 15px;
     border-bottom: 2px solid #e9ecef;
     text-align: left;
-}
-
-.dashboard-table td {
+  }
+  
+  .dashboard-table td {
     padding: 15px;
     border-bottom: 1px solid #e9ecef;
     vertical-align: middle;
-}
-
-.auth-container {
+  }
+  
+  .auth-container {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -98,138 +98,203 @@ header {
     max-width: 500px;
     margin: 50px auto;
     width: 100%;
-}
-
-.auth-container h2 {
+  }
+  
+  .auth-container h2 {
     color: #4CAF50;
     margin-bottom: 30px;
     font-size: 1.8rem;
-}
-
-.auth-form {
+  }
+  
+  .auth-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-.auth-form button {
+  }
+  
+  .auth-form button {
     background-color: #4CAF50;
     color: white;
     padding: 12px;
     font-size: 1rem;
     margin-top: 15px;
-}
-
-.auth-container input {
-    margin: 15px 0;
-}
-
-.budget-section button,
-.report-section button {
+  }
+  
+  .auth-container input {
+    padding: 10px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    width: 100%; /* Set to 100% to expand input fields horizontally */
+    font-size: 1rem;
+  }
+  
+  .budget-section button,
+  .report-section button {
     margin-top: 20px;
-}
-
-.report-container h3,
-.report-container p,
-.report-container h4,
-.report-container ul,
-.report-container li {
+  }
+  
+  .report-container h3,
+  .report-container p,
+  .report-container h4,
+  .report-container ul,
+  .report-container li {
     color: black; /* Change the "Report Summary" text color and everything in that section to black */
-}
-
-.input-group {
+  }
+  
+  .input-group {
     margin-bottom: 10px;
-}
-
-.amount-cell {
+  }
+  
+  .amount-cell {
     color: white;
     font-weight: 600;
     font-family: 'Courier New', monospace;
-}
-
-.category-tag {
+  }
+  
+  .category-tag {
     display: inline-block;
     padding: 5px 12px;
     border-radius: 15px;
     color: white;
     font-size: 0.85rem;
     font-weight: 500;
-}
-
-.date-cell {
+  }
+  
+  .date-cell {
     color: white;
     font-size: 0.9rem;
     white-space: nowrap;
-}
-
-.action-buttons {
+  }
+  
+  .action-buttons {
     display: flex;
     gap: 8px;
-}
-
-.edit-btn {
+  }
+  
+  .edit-btn {
     background-color: #0a3d3b;
     color: white;
     padding: 6px 12px;
     font-size: 0.85rem;
-}
-
-.delete-btn {
+  }
+  
+  .delete-btn {
     background-color: #0a3d3b;
     color: white;
     padding: 6px 12px;
     font-size: 0.85rem;
-}
-
-button {
+  }
+  
+  button {
     transition: all 0.2s ease;
     border-radius: 4px;
-}
-
-button:hover {
+  }
+  
+  button:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.input-group {
+  }
+  
+  .input-group {
     margin-bottom: 15px;
-}
-
-input {
+  }
+  
+  input {
     padding: 10px 8px;
     border: 1px solid #ced4da;
     border-radius: 4px;
     width: 36%;
     font-size: 1rem;
-}
-
-input:focus {
+  }
+  
+  input:focus {
     border-color: #4CAF50;
     outline: none;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-}
-
-.report-container {
+  }
+  
+  .report-container {
     background-color: #f8f9fa;
     border-radius: 8px;
     padding: 20px;
     margin-top: 25px;
-}
-
-.report-value {
+  }
+  
+  .report-value {
     color: #2e7d32;
     font-weight: 600;
     font-size: 1.1rem;
-}
-
-.logout-button {
+  }
+  
+  .logout-button {
     background-color: #1a1a1a;
     color: white;
     padding: 10px 25px;
     font-weight: 500;
-    margin-top: -130px; /* Move the logout button a little higher */
-}
-
-.logout-button:hover {
+    margin-top: -130px; 
+  }
+  
+  .logout-button:hover {
     background-color: #1a1a1a;
-}
+  }
+  
+  .category-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .tab-button {
+    background-color: #2d2d2d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .tab-button.active {
+    background-color: #0a3d3b;
+    font-weight: bold;
+  }
+  
+  .budget-list {
+    display: grid;
+    gap: 20px;
+  }
+  
+  .budget-item {
+    background-color: #2d2d2d;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .budget-details {
+    display: grid;
+    gap: 8px;
+    text-align: right;
+  }
+  
+  .budget-details p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  
+  .input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .input-group input[type="number"],
+  .input-group input[type="month"] {
+    width: auto;
+    flex: 1;
+  }
+  
