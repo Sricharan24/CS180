@@ -6,9 +6,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Import the models
-const Transaction = require('./models/Transaction');
-const Budget = require('./models/Budget');
-const User = require('./models/User');
+const Transaction = require('./Models/Transaction');
+const Budget = require('./Models/Budget');
+const User = require('./Models/User');
 
 // Initialize Express app
 const app = express();

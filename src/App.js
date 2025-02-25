@@ -77,24 +77,28 @@ function MainApp() {
             }
     
             if (response.ok) {
-                const updatedTransaction = await response.json();
-    
-                // ✅ Optimistically update UI before re-fetching budgets
+                const newTransaction = await response.json();
+            
+                // ✅ Optimistically update transactions state immediately
+                setTransactions(prevTransactions => [...prevTransactions, newTransaction]);
+            
+                // ✅ Optimistically update budgets before fetching fresh data
                 setBudgets((prevBudgets) => 
                     prevBudgets.map(budget => 
-                        budget.category === updatedTransaction.category && budget.month === updatedTransaction.date.slice(0, 7)
-                            ? { ...budget, spent: budget.spent + parseFloat(updatedTransaction.amount) }
+                        budget.category === newTransaction.category && budget.month === newTransaction.date.slice(0, 7)
+                            ? { ...budget, spent: budget.spent + parseFloat(newTransaction.amount) }
                             : budget
                     )
                 );
-    
-                // ✅ Re-fetch budgets to ensure consistency
+            
+                // ✅ Fetch latest transactions from backend to ensure consistency
+                await fetchTransactions();
                 await fetchBudgets();  
-    
+            
                 // Reset form and switch tabs
                 setForm({ amount: '', category: '', description: '', date: '' });
                 setActiveTab('transactions');
-            }
+            }            
         } catch (error) {
             console.error('Error adding/updating transaction:', error);
         }
