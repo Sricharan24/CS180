@@ -12,7 +12,11 @@ function MainApp() {
     const [reportForm, setReportForm] = useState({ startDate: '', endDate: '' });
     const [reportData, setReportData] = useState(null);
     const [sortOrder, setSortOrder] = useState('date');
-    const [budgetForm, setBudgetForm] = useState({ amount: '', category: '', startDate: '', endDate: '' });
+    const [budgetForm, setBudgetForm] = useState({
+        amount: '',
+        category: '',
+        monthYear: '', // Store the month and year as a single value (e.g., "2025-02")
+    });
     const [activeTab, setActiveTab] = useState('transactions');
 
     const navigate = useNavigate();
@@ -129,7 +133,7 @@ function MainApp() {
     const addBudget = async () => {
         const token = localStorage.getItem('token');
         const budget = { ...budgetForm };
-
+    
         try {
             const response = await fetch(`${API_BASE_URL}/budgets`, {
                 method: 'POST',
@@ -139,16 +143,18 @@ function MainApp() {
                 },
                 body: JSON.stringify(budget),
             });
-
+    
             if (response.ok) {
                 const newBudget = await response.json();
-                setBudgetForm({ amount: '', category: '', startDate: '', endDate: '' });
-                fetchBudgets();
+                setBudgetForm({ amount: '', category: '', monthYear: '' });
+                fetchBudgets();  // Refresh the list of budgets
+                setActiveTab('budgets'); // Ensure we stay on the 'budgets' tab after adding the budget
             }
         } catch (error) {
             console.error('Error adding budget:', error);
         }
     };
+    
 
     const downloadReport = () => {
         if (!reportData) return;
@@ -294,51 +300,42 @@ function MainApp() {
                     </section>
                 )}
 
-                {activeTab === 'budgets' && (
-                    <section className="section-box budget-section">
-                        <h2>Budgets</h2>
-                        <div className="input-group">
-                            <input
-                                type="number"
-                                placeholder="Budget Amount"
-                                value={budgetForm.amount}
-                                onChange={(e) => setBudgetForm({ ...budgetForm, amount: e.target.value })}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                placeholder="Budget Category"
-                                value={budgetForm.category}
-                                onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="date"
-                                placeholder="Start Date"
-                                value={budgetForm.startDate}
-                                onChange={(e) => setBudgetForm({ ...budgetForm, startDate: e.target.value })}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                type="date"
-                                placeholder="End Date"
-                                value={budgetForm.endDate}
-                                onChange={(e) => setBudgetForm({ ...budgetForm, endDate: e.target.value })}
-                            />
-                        </div>
-                        <button onClick={addBudget}>Add Budget</button>
-                        <ul>
-                            {budgets.map((b) => (
-                                <li key={b._id}>
-                                    {b.category}: ${b.amount} (From: {new Date(b.start_date).toLocaleDateString()} to {new Date(b.end_date).toLocaleDateString()})
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
-                )}
+{activeTab === 'budgets' && (
+    <section className="section-box budget-section">
+        <h2>Budgets</h2>
+        <div className="input-group">
+            <input
+                type="number"
+                placeholder="Budget Amount"
+                value={budgetForm.amount}
+                onChange={(e) => setBudgetForm({ ...budgetForm, amount: e.target.value })}
+            />
+        </div>
+        <div className="input-group">
+            <input
+                type="text"
+                placeholder="Budget Category"
+                value={budgetForm.category}
+                onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
+            />
+        </div>
+        <div className="input-group">
+            <input
+                type="month" 
+                value={budgetForm.monthYear}
+                onChange={(e) => setBudgetForm({ ...budgetForm, monthYear: e.target.value })}
+            />
+        </div>
+        <button onClick={addBudget}>Add Budget</button>
+        <ul>
+            {budgets.map((b) => (
+                <li key={b._id}>
+                    {b.category}: ${b.amount} (Month: {new Date(b.monthYear + '-01').toLocaleString('default', { month: 'long', year: 'numeric' })})
+                </li>
+            ))}
+        </ul>
+    </section>
+)}
 
                 {activeTab === 'report' && (
                     <section className="section-box report-section">
