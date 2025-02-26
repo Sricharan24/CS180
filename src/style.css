@@ -49,7 +49,8 @@ header {
 .report-section button,
 .logout-button,
 .edit-btn,
-.delete-btn,
+.delete-btn-budget,
+.delete-btn-transaction,
 .budget-section button,
 .tab-button {
   background-color: #0a3d3b;
@@ -177,8 +178,14 @@ button:hover {
   font-size: 0.85rem;
 }
 
-.delete-btn {
+.delete-btn-budget {
   font-size: 0.85rem;
+  margin-left: auto;
+}
+
+.delete-btn-transaction {
+  font-size: 0.85rem;
+  margin-left: auto;
 }
 
 button {
@@ -258,8 +265,8 @@ input:focus {
 .budget-details {
   display: grid;
   gap: 15px;
-  text-align: left;
-  margin-right: 100px;
+  text-align: center;
+  margin: 0 auto;
 }
 
 .budget-details p {
@@ -269,4 +276,34 @@ input:focus {
 
 .budget-section button:hover {
   background-color: #086b66;
+}
+
+.budget-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #282929;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.transactions-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #282929;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
