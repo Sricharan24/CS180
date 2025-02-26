@@ -78,27 +78,50 @@ function MainApp() {
     
             if (response.ok) {
                 const newTransaction = await response.json();
-            
-                // ✅ Optimistically update transactions state immediately
-                setTransactions(prevTransactions => [...prevTransactions, newTransaction]);
-            
-                // ✅ Optimistically update budgets before fetching fresh data
-                setBudgets((prevBudgets) => 
+    
+                const transactionMonth = newTransaction.date.slice(0, 7);
+    
+                // Find if category has a budget in any month
+                const hasCategoryBudget = budgets.some(b => b.category === newTransaction.category);
+    
+                // Check if budget for this category exists in the transaction's month
+                const budgetExistsInMonth = budgets.some(b => b.category === newTransaction.category && b.month === transactionMonth);
+    
+                if (hasCategoryBudget && !budgetExistsInMonth) {
+                    // If the category has previous budgets but not in this month, add a $0 budget for this month
+                    await fetch(`${API_BASE_URL}/budgets`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            category: newTransaction.category,
+                            amount: 0,
+                            month: transactionMonth,
+                            start_date: `${transactionMonth}-01`,
+                            end_date: `${transactionMonth}-31`
+                        }),
+                    });
+                }
+    
+                // Optimistically update budgets
+                setBudgets(prevBudgets => 
                     prevBudgets.map(budget => 
-                        budget.category === newTransaction.category && budget.month === newTransaction.date.slice(0, 7)
+                        budget.category === newTransaction.category && budget.month === transactionMonth
                             ? { ...budget, spent: budget.spent + parseFloat(newTransaction.amount) }
                             : budget
                     )
                 );
-            
-                // ✅ Fetch latest transactions from backend to ensure consistency
+    
+                // Refresh data
                 await fetchTransactions();
-                await fetchBudgets();  
-            
-                // Reset form and switch tabs
+                await fetchBudgets();
+    
+                // Reset form and switch to transactions tab
                 setForm({ amount: '', category: '', description: '', date: '' });
                 setActiveTab('transactions');
-            }            
+            }
         } catch (error) {
             console.error('Error adding/updating transaction:', error);
         }
@@ -170,7 +193,6 @@ function MainApp() {
           const data = await response.json();
           setBudgetForm({ amount: '', category: '', month: '' });
           fetchBudgets();
-          alert(`Budget for ${selectedCategory} added successfully!`);
       
         } catch (error) {
           console.error('Error adding budget:', error);
@@ -189,7 +211,6 @@ function MainApp() {
             });
     
             if (response.ok) {
-                alert('Budget deleted successfully');
                 fetchBudgets(); // Refresh budget list
             } else {
                 const data = await response.json();
@@ -396,7 +417,19 @@ function MainApp() {
             <button onClick={addBudget}>Add Budget</button>
         </div>
 
-        
+        {/* ✅ Display Total Budget for Selected Category */}
+{selectedCategory && (
+    <div className="total-category-budget" style={{ marginBottom: '15px', fontWeight: 'bold', fontSize: '18px' }}>
+        <h3>
+            Total {selectedCategory} Budget: $
+            {budgets
+                .filter(budget => budget.category === selectedCategory)
+                .reduce((sum, budget) => sum + budget.amount, 0)
+                .toFixed(2)}
+        </h3>
+    </div>
+)}
+
         <div className="budget-list">
         {budgets
     .filter(b => b.category === selectedCategory)

@@ -91,17 +91,48 @@ app.get('/transactions', authenticate, async (req, res) => {
 });
 
 app.post('/transactions', authenticate, async (req, res) => {
-  try {
-      const transaction = new Transaction({ ...req.body, user_id: req.user.userId });
-      const savedTransaction = await transaction.save();
-      
-      // Return all transactions for the user
-      const transactions = await Transaction.find({ user_id: req.user.userId });
-      res.status(201).json(transactions);
-  } catch (error) {
-      console.error('Error saving transaction:', error);
-      res.status(400).json({ error: 'Error saving transaction' });
-  }
+    try {
+        const { amount, category, date } = req.body;
+        const userId = req.user.userId;
+        const transactionMonth = date.slice(0, 7); // Extract YYYY-MM format
+
+        // Check if the category has any budget in other months
+        const categoryHasBudget = await Budget.exists({ user_id: userId, category });
+
+        // Check if this category has a budget in this specific month
+        const budgetExists = await Budget.findOne({ user_id: userId, category, month: transactionMonth });
+
+        if (categoryHasBudget && !budgetExists) {
+            // If the category has budgets in other months but not in this one, add a $0 budget
+            const zeroBudget = new Budget({
+                user_id: userId,
+                category: category,
+                amount: 0, // Start with zero budget
+                month: transactionMonth,
+                start_date: `${transactionMonth}-01`,
+                end_date: `${transactionMonth}-31`,
+                spent: 0,
+                remaining: 0
+            });
+            await zeroBudget.save();
+        }
+
+        // Save the transaction
+        const transaction = new Transaction({ user_id: userId, amount, category, date });
+        await transaction.save();
+
+        // Update budget values after transaction is saved
+        if (budgetExists) {
+            budgetExists.spent += parseFloat(amount);
+            budgetExists.remaining = Math.max(0, budgetExists.amount - budgetExists.spent);
+            await budgetExists.save();
+        }
+
+        res.status(201).json(transaction);
+    } catch (error) {
+        console.error('Error saving transaction:', error);
+        res.status(400).json({ error: 'Error saving transaction' });
+    }
 });
 
 app.put('/transactions/:id', authenticate, async (req, res) => {
