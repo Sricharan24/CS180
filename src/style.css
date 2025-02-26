@@ -315,3 +315,21 @@ body {
     flex: 1;
   }
   
+  .pie-chart-container {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%; /* Ensure it takes up full width */
+    height: auto; 
+    position: relative; /* Ensure the chart is positioned correctly */
+   
+}
+
+.pie-chart-container h4 {
+    margin-bottom: 10px;
+    color: black; /* Ensure the text is visible */
+
+}
+
+.report-container {
+  overflow: visible; /* Ensure the chart is not clipped */
+}

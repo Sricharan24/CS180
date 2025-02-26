@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
 const CATEGORIES = ['Food', 'Transportation', 'Housing', 'Entertainment', 'Utilities', 'Healthcare', 'Education', 'Other'];
@@ -267,6 +271,71 @@ function MainApp() {
         navigate('/signin');
     };
 
+    const getPieChartData = () => {
+        const selectedBudget = budgets.find(b => b.category === selectedCategory);
+        console.log("Selected Budget:", selectedBudget); // Debugging line
+    
+        if (!selectedBudget) {
+            console.log("No selected budget found. Using fallback data."); // Debugging line
+            return {
+                labels: ['Spent', 'Remaining'],
+                datasets: [
+                    {
+                        label: 'Budget Overview',
+                        data: [0,0],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(75, 192, 192, 1)',
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            };
+        }
+    
+        console.log("Chart Data:", { // Debugging line
+            labels: ['Spent', 'Remaining'],
+            datasets: [
+                {
+                    label: 'Budget Overview',
+                    data: [selectedBudget.spent, selectedBudget.remaining],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1,
+                },
+            ],
+        });
+    
+        return {
+            labels: ['Spent', 'Remaining'],
+            datasets: [
+                {
+                    label: 'Budget Overview',
+                    data: [selectedBudget.spent, selectedBudget.remaining],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1,
+                },
+            ],
+        };
+    };
+
     return (
         <div>
             <header>
@@ -495,6 +564,12 @@ function MainApp() {
                                     ))}
                                 </ul>
                                 <button onClick={downloadReport}>Download Report</button>
+                                <div className="pie-chart-container">
+                                    <h4>Budget Overview : {selectedCategory}</h4>
+                                    <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
+                                        <Pie data={getPieChartData()} />
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </section>
