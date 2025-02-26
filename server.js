@@ -92,7 +92,7 @@ app.get('/transactions', authenticate, async (req, res) => {
 
 app.post('/transactions', authenticate, async (req, res) => {
     try {
-        const { amount, category, date } = req.body;
+        const { amount, category, description, date } = req.body;
         const userId = req.user.userId;
         const transactionMonth = date.slice(0, 7); // Extract YYYY-MM format
 
@@ -118,7 +118,7 @@ app.post('/transactions', authenticate, async (req, res) => {
         }
 
         // Save the transaction
-        const transaction = new Transaction({ user_id: userId, amount, category, date });
+        const transaction = new Transaction({ user_id: userId, amount, category, description, date });
         await transaction.save();
 
         // Update budget values after transaction is saved
@@ -189,20 +189,6 @@ app.delete('/transactions/:id', authenticate, async (req, res) => {
 /** 
  * @route GET /budgets
  * @desc Fetch all budgets for the logged-in user
- */
-app.get('/budgets', authenticate, async (req, res) => {
-  try {
-    const budgets = await Budget.find({ user_id: req.user.userId });
-    res.json(budgets);
-  } catch (error) {
-    console.error('Error fetching budgets:', error);
-    res.status(500).send('Error fetching budgets');
-  }
-});
-
-/** 
- * @route POST /budgets
- * @desc Add a new budget for the logged-in user
  */
 app.get('/budgets', authenticate, async (req, res) => {
   try {
