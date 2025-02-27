@@ -146,6 +146,7 @@ function MainApp() {
         } catch (error) {
             console.error('Error deleting transaction:', error);
         }
+        fetchBudgets(); // Refresh budget list
     };
 
     const handleEditTransaction = (transaction) => {
