@@ -11,7 +11,7 @@ import JSZip from 'jszip';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
-const CATEGORIES = ['Food', 'Transportation', 'Housing', 'Entertainment', 'Utilities', 'Healthcare', 'Education', 'Other'];
+const CATEGORIES = ['Food', 'Transportation', 'Housing', 'Entertainment', 'Utilities', 'Healthcare', 'Education', 'Shopping','Other'];
 
 function MainApp() {
     const [transactions, setTransactions] = useState([]);
@@ -59,7 +59,10 @@ function MainApp() {
 
     const addTransaction = async () => {
         const token = localStorage.getItem('token');
-        const transaction = { ...form };
+        const transaction = { 
+            ...form, 
+            date: form.date
+        };
     
         try {
             let response;
@@ -158,7 +161,7 @@ function MainApp() {
             amount: transaction.amount,
             category: transaction.category,
             description: transaction.description,
-            date: new Date(transaction.date).toISOString().split('T')[0],
+            date: new Date(transaction.date).toLocaleDateString('en-CA'),  // ✅ Converts to Local Time
         });
         setActiveTab('addTransaction');
     };
@@ -299,6 +302,7 @@ function MainApp() {
         Utilities: 'rgba(181, 153, 240, 0.8)',     // Muted Purple
         Healthcare: 'rgba(255, 147, 79, 0.8)',     // Warm Orange
         Education: 'rgba(165, 214, 167, 0.8)',     // Soft Green
+        Shopping: 'rgba(236, 112, 214, 0.8)', // Soft Pink-Purple 
         Other: 'rgba(120, 120, 120, 0.8)',         // Neutral Gray
     };
     
@@ -422,9 +426,12 @@ function MainApp() {
                             </thead>
                             <tbody>
                                 {sortTransactions(transactions).map((t) => (
-                                    <tr key={t._id}>
-                                        <td className="date-cell">
-                                            {new Date(t.date).toLocaleDateString('en-US')}
+                                        <tr key={t._id}>
+                                            <td className="date-cell">
+                                            {(() => {
+                                                const [year, month, day] = t.date.split('-'); 
+                                                return `${parseInt(month)}/${parseInt(day)}/${year}`;
+                                            })()}
                                         </td>
                                         <td>{t.description}</td>
                                         <td>
