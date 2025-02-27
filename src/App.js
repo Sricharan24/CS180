@@ -328,7 +328,7 @@ function MainApp() {
             </header>
 
             <div className="nav-tabs">
-                <button onClick={() => setActiveTab('addTransaction')}>Add Transaction</button>
+                <button onClick={() => setActiveTab('addTransaction')}>Add a Transaction</button>
                 <button onClick={() => setActiveTab('transactions')}>Transactions</button>
                 <button onClick={() => setActiveTab('budgets')}>Budgets</button>
                 <button onClick={() => setActiveTab('report')}>Financial Report</button>
