@@ -255,18 +255,23 @@ input:focus {
 
 .budget-item {
   background-color: #2d2d2d;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .budget-details {
+  flex: 1;
   display: grid;
-  gap: 15px;
+  gap: 10px;
   text-align: center;
-  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.delete-btn {
+  margin-left: auto;
 }
 
 .budget-details p {
