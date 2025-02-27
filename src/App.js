@@ -4,6 +4,9 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import html2canvas from 'html2canvas';
+import JSZip from 'jszip';
+
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -242,24 +245,40 @@ function MainApp() {
     };
 
 
-    const downloadReport = () => {
+    const downloadReport = async () => {
         if (!reportData) return;
-
-        let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += `Total Spending,${reportData.totalSpending.toFixed(2)}\n\n`;
+    
+        const zip = new JSZip();
+    
+        let csvContent = "Total Spending," + reportData.totalSpending.toFixed(2) + "\n\n";
         csvContent += "Category,Amount\n";
         Object.entries(reportData.categoryBreakdown).forEach(([category, amount]) => {
             csvContent += `${category},${amount.toFixed(2)}\n`;
         });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "Financial Report.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    
+        zip.file("Financial_Report.csv", csvContent);
+    
+        const chartElement = document.querySelector(".pie-chart-container canvas");
+        if (chartElement) {
+            html2canvas(chartElement).then(canvas => {
+                canvas.toBlob(blob => {
+                    zip.file("Pie_Chart.png", blob);
+    
+                    zip.generateAsync({ type: "blob" }).then(zipBlob => {
+                        const link = document.createElement("a");
+                        link.href = URL.createObjectURL(zipBlob);
+                        link.download = "Financial_Report.zip";
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+                }, "image/png");
+            });
+        } else {
+            console.error("Pie chart not found!");
+        }
     };
+    
 
     const sortTransactions = (transactions) => {
         return sortOrder === 'amount' 
@@ -547,11 +566,12 @@ function MainApp() {
                                 </ul>
                                 <button onClick={downloadReport}>Download Report</button>
                                 <div className="pie-chart-container">
-                                    <h4>Pie Chart of Transactions</h4>
-                                    <div style={{ width: '300px', height: '300px', margin: '0 auto' }}>
+                                    <h4>Pie Chart of Spendings</h4>
+                                    <div style={{ width: '350px', height: '350px', margin: '0 auto' }}>
                                         <Pie data={getPieChartData()} />
                                     </div>
                                 </div>
+
                             </div>
                         )}
                     </section>
