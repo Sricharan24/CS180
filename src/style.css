@@ -220,11 +220,21 @@ input:focus {
 }
 
 .report-container {
-  background-color: #f8f9fa;
+  background-color: #282929; /* Grey background */
   border-radius: 8px;
   padding: 20px;
   margin-top: 25px;
+  color: white; /* White text color */
 }
+
+.report-container h3,
+.report-container p,
+.report-container h4,
+.report-container ul,
+.report-container li {
+  color: white; /* Ensure all text inside the report is white */
+}
+
 
 .report-value {
   color: #2e7d32;
@@ -312,3 +322,4 @@ input:focus {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+

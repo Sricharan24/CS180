@@ -272,70 +272,51 @@ function MainApp() {
         navigate('/signin');
     };
 
-    const getPieChartData = () => {
-        const selectedBudget = budgets.find(b => b.category === selectedCategory);
-        console.log("Selected Budget:", selectedBudget); // Debugging line
+    const CATEGORY_COLORS = {
+        Food: 'rgba(255, 107, 129, 0.8)',         // Soft Red
+        Transportation: 'rgba(77, 171, 247, 0.8)', // Muted Blue
+        Housing: 'rgba(255, 182, 193, 0.8)', // Baby Pink
+        Entertainment: 'rgba(98, 189, 178, 0.8)',  // Teal
+        Utilities: 'rgba(181, 153, 240, 0.8)',     // Muted Purple
+        Healthcare: 'rgba(255, 147, 79, 0.8)',     // Warm Orange
+        Education: 'rgba(165, 214, 167, 0.8)',     // Soft Green
+        Other: 'rgba(120, 120, 120, 0.8)',         // Neutral Gray
+    };
     
-        if (!selectedBudget) {
-            console.log("No selected budget found. Using fallback data."); // Debugging line
+    
+    const getPieChartData = () => {
+        if (!reportData || !reportData.categoryBreakdown) {
             return {
-                labels: ['Spent', 'Remaining'],
+                labels: [],
                 datasets: [
                     {
-                        label: 'Budget Overview',
-                        data: [0,0],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(75, 192, 192, 1)',
-                        ],
+                        label: 'Spending Breakdown',
+                        data: [],
+                        backgroundColor: [],
+                        borderColor: [],
                         borderWidth: 1,
                     },
                 ],
             };
         }
     
-        console.log("Chart Data:", { // Debugging line
-            labels: ['Spent', 'Remaining'],
-            datasets: [
-                {
-                    label: 'Budget Overview',
-                    data: [selectedBudget.spent, selectedBudget.remaining],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(75, 192, 192, 1)',
-                    ],
-                    borderWidth: 1,
-                },
-            ],
-        });
+        const categories = Object.keys(reportData.categoryBreakdown);
+        const amounts = Object.values(reportData.categoryBreakdown);
     
         return {
-            labels: ['Spent', 'Remaining'],
+            labels: categories,
             datasets: [
                 {
-                    label: 'Budget Overview',
-                    data: [selectedBudget.spent, selectedBudget.remaining],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(75, 192, 192, 1)',
-                    ],
+                    label: '$',
+                    data: amounts,
+                    backgroundColor: categories.map(category => CATEGORY_COLORS[category] || 'rgba(150, 150, 150, 0.6)'),
+                    borderColor: categories.map(category => CATEGORY_COLORS[category] || 'rgba(100, 100, 100, 1)'),
                     borderWidth: 1,
                 },
             ],
         };
     };
+    
 
     return (
         <div>
@@ -566,8 +547,8 @@ function MainApp() {
                                 </ul>
                                 <button onClick={downloadReport}>Download Report</button>
                                 <div className="pie-chart-container">
-                                    <h4>Budget Overview : {selectedCategory}</h4>
-                                    <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
+                                    <h4>Pie Chart of Transactions</h4>
+                                    <div style={{ width: '300px', height: '300px', margin: '0 auto' }}>
                                         <Pie data={getPieChartData()} />
                                     </div>
                                 </div>
