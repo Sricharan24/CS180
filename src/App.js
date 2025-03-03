@@ -504,6 +504,7 @@ function MainApp() {
     .map((budget) => {
         const [year, month] = budget.month.split('-').map(Number);
         const formattedMonth = new Date(year, month - 1, 1).toLocaleString('default', { month: 'long', year: 'numeric' });
+        const percentageSpent = Math.min((budget.spent / budget.amount) * 100, 100);
 
         return (
             <div key={budget._id} className="budget-item">
@@ -512,6 +513,12 @@ function MainApp() {
                     <p>Budget: ${budget.amount.toFixed(2)}</p>
                     <p>Spent: ${budget.spent.toFixed(2)}</p>
                     <p>Remaining: ${budget.remaining.toFixed(2)}</p>
+                    <div className="progress-bar-container">
+                        <div className="progress-bar">
+                            <div className="progress-fill" style={{ width: `${percentageSpent}%` }}></div>
+                        </div>
+                        <span className="progress-label">{percentageSpent.toFixed(0)}%</span>
+                    </div>
                     <button 
                         className="delete-btn"
                         onClick={() => deleteBudget(budget._id)}

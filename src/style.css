@@ -267,9 +267,11 @@ input:focus {
   background-color: #2d2d2d;
   padding: 8px;
   border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
+  display: center;
+  justify-content: center;
   align-items: center;
+  text-align: left;
+  width: 100%;
 }
 
 .budget-details {
@@ -323,3 +325,37 @@ input:focus {
   transform: translate(-50%, -50%);
 }
 
+/* Small Progress Bar Styles */
+.progress-bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Small, Thin Progress Bar Above Delete Button */
+.progress-bar {
+  width: 150px; /* Short width */
+  height: 5px; /* Very small height */
+  background-color: #f5f2f2; /* Dark background */
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px; /* Space between bar and delete button */
+  position: relative;
+  right: 0;
+}
+
+/* Filled portion of progress bar */
+.progress-fill {
+  height: 100%;
+  background-color: #eb0951; /* Green color for progress */
+  transition: width 0.4s ease-in-out;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  margin-top: 2px;
+  color: white;
+  font-weight: 500;
+}
