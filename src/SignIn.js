@@ -1,3 +1,4 @@
+import { color } from 'chart.js/helpers';
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -50,7 +51,7 @@ function SignIn() {
                 <button type="submit">Sign In</button>
             </form>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-            <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
+            <p style={{ color: 'black' }}>Don't have an account? <Link to="/signup">Sign Up</Link></p>
         </div>
     );
 }

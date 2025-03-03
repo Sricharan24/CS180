@@ -5,19 +5,15 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Import the models
 const Transaction = require('./Models/Transaction');
 const Budget = require('./Models/Budget');
 const User = require('./Models/User');
 
-// Initialize Express app
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -26,7 +22,6 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Error connecting to MongoDB:', error));
 
-// Middleware to authenticate user
 const authenticate = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
@@ -41,7 +36,6 @@ const authenticate = (req, res, next) => {
   }
 };
 
-// Utility function to update budgets
 const updateBudgetsForTransaction = async (userId, category, date) => {
   try {
     const budgets = await Budget.find({
@@ -63,7 +57,6 @@ const updateBudgetsForTransaction = async (userId, category, date) => {
 
       const totalSpent = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
       
-      // Add validation
       if (isNaN(totalSpent)) {
         throw new Error('Invalid transaction amounts found');
       }
@@ -74,11 +67,9 @@ const updateBudgetsForTransaction = async (userId, category, date) => {
     }
   } catch (error) {
     console.error('Error updating budgets:', error);
-    throw error; // Re-throw to be caught by parent try/catch
+    throw error;
   }
 };
-
-// Transaction Routes
 
 app.get('/transactions', authenticate, async (req, res) => {
   try {
@@ -94,20 +85,17 @@ app.post('/transactions', authenticate, async (req, res) => {
     try {
         const { amount, category, description, date } = req.body;
         const userId = req.user.userId;
-        const transactionMonth = date.slice(0, 7); // Extract YYYY-MM format
+        const transactionMonth = date.slice(0, 7);
 
-        // Check if the category has any budget in other months
         const categoryHasBudget = await Budget.exists({ user_id: userId, category });
 
-        // Check if this category has a budget in this specific month
         const budgetExists = await Budget.findOne({ user_id: userId, category, month: transactionMonth });
 
         if (categoryHasBudget && !budgetExists) {
-            // If the category has budgets in other months but not in this one, add a $0 budget
             const zeroBudget = new Budget({
                 user_id: userId,
                 category: category,
-                amount: 0, // Start with zero budget
+                amount: 0,
                 month: transactionMonth,
                 start_date: `${transactionMonth}-01`,
                 end_date: `${transactionMonth}-31`,
@@ -117,11 +105,9 @@ app.post('/transactions', authenticate, async (req, res) => {
             await zeroBudget.save();
         }
 
-        // Save the transaction
         const transaction = new Transaction({ user_id: userId, amount, category, description, date });
         await transaction.save();
 
-        // Update budget values after transaction is saved
         if (budgetExists) {
             budgetExists.spent += parseFloat(amount);
             budgetExists.remaining = Math.max(0, budgetExists.amount - budgetExists.spent);
@@ -145,7 +131,6 @@ app.put('/transactions/:id', authenticate, async (req, res) => {
     );
     
     if (updatedTransaction) {
-      // Update budgets after modification
       await updateBudgetsForTransaction(
         req.user.userId,
         updatedTransaction.category,
@@ -170,7 +155,6 @@ app.delete('/transactions/:id', authenticate, async (req, res) => {
     });
     
     if (deletedTransaction) {
-      // Update budgets after deletion
       await updateBudgetsForTransaction(
         req.user.userId,
         deletedTransaction.category,
@@ -186,10 +170,6 @@ app.delete('/transactions/:id', authenticate, async (req, res) => {
   }
 });
 
-/** 
- * @route GET /budgets
- * @desc Fetch all budgets for the logged-in user
- */
 app.get('/budgets', authenticate, async (req, res) => {
   try {
     const budgets = await Budget.find({ user_id: req.user.userId });
@@ -246,9 +226,6 @@ app.post('/budgets', authenticate, async (req, res) => {
 });
 
 
-
-// Replace the deleteBudget function with this proper route
-// Add proper budget deletion route (replace any existing deleteBudget function)
 app.delete('/budgets/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;
@@ -268,11 +245,6 @@ app.delete('/budgets/:id', authenticate, async (req, res) => {
   }
 });
 
-
-/** 
- * @route GET /reports
- * @desc Generate a financial report for a given date range for the logged-in user
- */
 app.get('/reports', authenticate, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
@@ -313,10 +285,6 @@ app.get('/reports', authenticate, async (req, res) => {
   }
 });
 
-/** 
- * @route POST /signup
- * @desc Register a new user
- */
 app.post('/signup', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -330,10 +298,6 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-/** 
- * @route POST /signin
- * @desc Authenticate a user
- */
 app.post('/signin', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -349,6 +313,5 @@ app.post('/signin', async (req, res) => {
   }
 });
 
-// Start the server
 const PORT = 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

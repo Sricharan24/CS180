@@ -85,14 +85,11 @@ function MainApp() {
     
                 const transactionMonth = newTransaction.date.slice(0, 7);
     
-                // Find if category has a budget in any month
                 const hasCategoryBudget = budgets.some(b => b.category === newTransaction.category);
     
-                // Check if budget for this category exists in the transaction's month
                 const budgetExistsInMonth = budgets.some(b => b.category === newTransaction.category && b.month === transactionMonth);
     
                 if (hasCategoryBudget && !budgetExistsInMonth) {
-                    // If the category has previous budgets but not in this month, add a $0 budget for this month
                     await fetch(`${API_BASE_URL}/budgets`, {
                         method: 'POST',
                         headers: {
@@ -109,7 +106,6 @@ function MainApp() {
                     });
                 }
     
-                // Optimistically update budgets
                 setBudgets(prevBudgets => 
                     prevBudgets.map(budget => 
                         budget.category === newTransaction.category && budget.month === transactionMonth
@@ -118,11 +114,9 @@ function MainApp() {
                     )
                 );
     
-                // Refresh data
                 await fetchTransactions();
                 await fetchBudgets();
     
-                // Reset form and switch to transactions tab
                 setForm({ amount: '', category: '', description: '', date: '' });
                 setActiveTab('transactions');
             }
@@ -146,7 +140,7 @@ function MainApp() {
         } catch (error) {
             console.error('Error deleting transaction:', error);
         }
-        fetchBudgets(); // Refresh budget list
+        fetchBudgets();
     };
 
     const handleEditTransaction = (transaction) => {
@@ -163,7 +157,6 @@ function MainApp() {
     const addBudget = async () => {
         const token = localStorage.getItem('token');
         
-        // Validate all fields using the selectedCategory state
         if (!budgetForm.month || !selectedCategory || !budgetForm.amount) {
           alert('Please fill all budget fields');
           return;
@@ -177,7 +170,7 @@ function MainApp() {
               'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-              category: selectedCategory, // Use selectedCategory instead of form field
+              category: selectedCategory,
               amount: parseFloat(budgetForm.amount),
               month: budgetForm.month,
               start_date: `${budgetForm.month}-01`,
@@ -189,7 +182,6 @@ function MainApp() {
             }),
           });
       
-          // Handle response properly
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.message || 'Failed to save budget');
@@ -216,7 +208,7 @@ function MainApp() {
             });
     
             if (response.ok) {
-                fetchBudgets(); // Refresh budget list
+                fetchBudgets();
             } else {
                 const data = await response.json();
                 alert(`Error: ${data.message || "Could not delete budget"}`);
@@ -273,14 +265,14 @@ function MainApp() {
     };
 
     const CATEGORY_COLORS = {
-        Food: 'rgba(255, 107, 129, 0.8)',         // Soft Red
-        Transportation: 'rgba(77, 171, 247, 0.8)', // Muted Blue
-        Housing: 'rgba(255, 182, 193, 0.8)', // Baby Pink
-        Entertainment: 'rgba(98, 189, 178, 0.8)',  // Teal
-        Utilities: 'rgba(181, 153, 240, 0.8)',     // Muted Purple
-        Healthcare: 'rgba(255, 147, 79, 0.8)',     // Warm Orange
-        Education: 'rgba(165, 214, 167, 0.8)',     // Soft Green
-        Other: 'rgba(120, 120, 120, 0.8)',         // Neutral Gray
+        Food: 'rgba(255, 107, 129, 0.8)',
+        Transportation: 'rgba(77, 171, 247, 0.8)',
+        Housing: 'rgba(255, 182, 193, 0.8)',
+        Entertainment: 'rgba(98, 189, 178, 0.8)', 
+        Utilities: 'rgba(181, 153, 240, 0.8)',
+        Healthcare: 'rgba(255, 147, 79, 0.8)',
+        Education: 'rgba(165, 214, 167, 0.8)',
+        Other: 'rgba(120, 120, 120, 0.8)',
     };
     
     
@@ -445,7 +437,6 @@ function MainApp() {
       className={`tab-button ${selectedCategory === category ? 'active' : ''}`}
       onClick={() => {
         setSelectedCategory(category);
-        // No need to update budgetForm.category since we're using selectedCategory
       }}
     >
       {category}
