@@ -317,8 +317,13 @@ function MainApp() {
         const categories = Object.keys(reportData.categoryBreakdown);
         const amounts = Object.values(reportData.categoryBreakdown);
     
+        // labels include the amount spent in each category
+        const labelsWithAmounts = categories.map((category, index) => 
+            `${category}: $${amounts[index].toFixed(2)}`
+        );
+    
         return {
-            labels: categories,
+            labels: labelsWithAmounts,
             datasets: [
                 {
                     label: '$',
